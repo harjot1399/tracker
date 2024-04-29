@@ -30,4 +30,26 @@ class JobsView(APIView):
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
+class JobView(APIView):
+    authentication_classes = [BasicAuthentication]
+    permission_classes = [IsAuthenticated]
+
+    def get (self, request, username , job_id):
+        job =  get_object_or_404(Job, id = job_id)
+        return Response(JobSerializer(job).data, status=status.HTTP_200_OK)
+    
+    def patch (self, request, username, job_id):
+        job =  get_object_or_404(Job, id = job_id)
+        user = get_object_or_404(User, username=username)
+        serializer = JobSerializer(job, data=request.data, partial=True)
+        if serializer.is_valid():
+            serializer.save(user=user)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+    def delete (self,request, username, job_id):
+        job = get_object_or_404(Job, id = job_id)
+        job.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
+
 

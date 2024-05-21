@@ -1,9 +1,11 @@
 import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
+
 import React from "react";
-import { Experimental_CssVarsProvider, TextField, Alert} from '@mui/material';
+import { TextField, Alert} from '@mui/material';
 import { useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 
 export function SignUpPage() {
     const [formData, setFormData] = useState({
@@ -13,6 +15,7 @@ export function SignUpPage() {
         confirmPassword: ""
     });
     const [passwordError, setPasswordError] = useState(false);
+    const navigator = useNavigate()
 
     const handleChange = (event) => {
         const { name, value } = event.target;
@@ -39,7 +42,7 @@ export function SignUpPage() {
             console.log(formData);
             setPasswordError(false)
             try {
-                const response = await fetch('https://localhost:8000/auth/signup', {
+                const response = await fetch('http://127.0.0.1:8000/authentication/signup', {
                     method: 'POST',
                     headers: {'Content-Type':'application/json'},
                     body: JSON.stringify(dataToSubmit)
@@ -47,6 +50,9 @@ export function SignUpPage() {
 
                 if (response.ok){
                     console.log("User signed up successfully")
+                    setTimeout(() => {
+                        navigator('/')
+                    },1000)
                 }
             } catch(error){
                 console.log(error)
@@ -129,11 +135,14 @@ export function SignUpPage() {
                     </Alert>
                 )}
 
-                <Box sx={{ display: 'flex', justifyContent: 'center', mt: 2 }}>
-                    <Button type="submit" variant="contained" color="primary">
+                <Box sx={{ display: 'flex', justifyContent: 'center', mt: 2 , mb: 2}}>
+                    <Button type="submit" variant="contained" color="primary" onClick={handleSubmit}>
                         Create Account
                     </Button>
                 </Box>
+                <Typography variant='h6' > Back to <Link to="/"> Login </Link></Typography>
+
+
        
             </Box>
             
